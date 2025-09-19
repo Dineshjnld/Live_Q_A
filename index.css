@@ -1,0 +1,73 @@
+/* Global animated backgrounds and subtle visual enhancements for large screens */
+@keyframes subtle-pan {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.bg-animated {
+  /* Layered gradients for depth */
+  background-image:
+    radial-gradient(1200px 800px at 10% 10%, rgba(79,70,229,0.20), transparent 60%),
+    radial-gradient(1000px 700px at 90% 80%, rgba(34,211,238,0.18), transparent 65%),
+    linear-gradient(120deg, #0B1020 0%, #111827 60%, #0B1020 100%);
+  background-size: 200% 200%;
+  animation: subtle-pan 28s ease-in-out infinite;
+}
+
+.panel-animated {
+  background-image:
+    radial-gradient(800px 600px at 15% 15%, rgba(79,70,229,0.18), transparent 60%),
+    radial-gradient(700px 500px at 85% 85%, rgba(34,211,238,0.16), transparent 65%),
+    linear-gradient(160deg, rgba(31,41,55,0.85) 0%, rgba(17,24,39,0.85) 100%);
+  background-size: 200% 200%;
+  animation: subtle-pan 36s ease-in-out infinite;
+  backdrop-filter: blur(4px);
+}
+
+/* Enhance focus styles for accessibility */
+:root {
+  --focus: 0 0 0 3px rgba(34,211,238,0.5), 0 0 0 6px rgba(34,211,238,0.25);
+}
+:focus-visible { outline: none !important; box-shadow: var(--focus) !important; border-radius: 0.5rem; }
+
+/* Light theme overrides using CSS variables */
+html.theme-light, body.theme-light {
+  color-scheme: light;
+  --background: #f8fafc; /* slate-50 */
+  --primary: #ffffff;    /* white panel */
+  --secondary: #e5e7eb;  /* gray-200 */
+  --accent: #4f46e5;     /* indigo-600 */
+  --text-main: #111827;  /* gray-900 */
+  --text-secondary: #374151; /* gray-700 */
+  --success: #059669;    /* emerald-600 */
+  --danger: #dc2626;     /* red-600 */
+}
+
+/* Override Tailwind utility colors for semantic tokens in light mode */
+body.theme-light .bg-background { background-color: var(--background) !important; }
+body.theme-light .bg-primary { background-color: var(--primary) !important; }
+body.theme-light .bg-secondary { background-color: var(--secondary) !important; }
+body.theme-light .text-text-main { color: var(--text-main) !important; }
+body.theme-light .text-text-secondary { color: var(--text-secondary) !important; }
+body.theme-light .border-secondary { border-color: var(--secondary) !important; }
+body.theme-light .bg-accent { background-color: var(--accent) !important; }
+body.theme-light .text-accent { color: var(--accent) !important; }
+
+/* Animated backgrounds tuned for light mode */
+body.theme-light.bg-animated,
+html.theme-light .bg-animated, body.theme-light.bg-animated,
+body.theme-light .bg-animated {
+  background-image:
+    radial-gradient(1200px 800px at 10% 10%, rgba(79,70,229,0.12), transparent 60%),
+    radial-gradient(1000px 700px at 90% 80%, rgba(16,185,129,0.12), transparent 65%),
+    linear-gradient(120deg, #f3f4f6 0%, #ffffff 60%, #f3f4f6 100%);
+}
+
+html.theme-light .panel-animated, body.theme-light .panel-animated {
+  background-image:
+    radial-gradient(800px 600px at 15% 15%, rgba(79,70,229,0.08), transparent 60%),
+    radial-gradient(700px 500px at 85% 85%, rgba(16,185,129,0.08), transparent 65%),
+    linear-gradient(160deg, rgba(255,255,255,0.9) 0%, rgba(243,244,246,0.9) 100%);
+  backdrop-filter: blur(6px);
+}

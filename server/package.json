@@ -1,0 +1,17 @@
+{
+  "name": "live-qa-server",
+  "private": true,
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "node --watch --env-file=../.env.local index.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "live-qa-word-cloud": "file:..",
+    "mongodb": "^6.9.0",
+    "nanoid": "^5.0.7"
+  }
+}
