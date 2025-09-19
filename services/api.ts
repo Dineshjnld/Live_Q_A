@@ -1,5 +1,10 @@
 import type { Event, Question, Response } from '../types';
 
+// Base URL for API requests. In dev, Vite proxy handles "/api" so leave empty.
+// In production, set VITE_API_BASE (e.g., https://your-api.onrender.com)
+const API_BASE = (import.meta as any).env?.VITE_API_BASE ? String((import.meta as any).env.VITE_API_BASE).replace(/\/$/, '') : '';
+const api = (path: string) => `${API_BASE}${path}`;
+
 // Normalize event payloads received from the server into typed objects with Date instances
 const toEvent = (raw: any): Event => ({
   id: raw.id,
@@ -14,7 +19,7 @@ const toEvent = (raw: any): Event => ({
 });
 
 export const createEvent = async (eventName: string): Promise<Event> => {
-  const res = await fetch('/api/events', {
+  const res = await fetch(api('/api/events'), {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ name: eventName })
@@ -29,21 +34,21 @@ export const createEvent = async (eventName: string): Promise<Event> => {
 };
 
 export const getEventByCode = async (code: string): Promise<Event | null> => {
-  const res = await fetch(`/api/events/code/${code}`);
+  const res = await fetch(api(`/api/events/code/${code}`));
   if (res.status === 404) return null;
   if (!res.ok) throw new Error('Failed to fetch event');
   return toEvent(await res.json());
 };
 
 export const getEventById = async (eventId: string): Promise<Event | null> => {
-  const res = await fetch(`/api/events/${eventId}`);
+  const res = await fetch(api(`/api/events/${eventId}`));
   if (res.status === 404) return null;
   if (!res.ok) throw new Error('Failed to fetch event');
   return toEvent(await res.json());
 };
 
 export const addQuestionToEvent = async (eventId: string, questionText: string): Promise<Question | null> => {
-  const res = await fetch(`/api/events/${eventId}/questions`, {
+  const res = await fetch(api(`/api/events/${eventId}/questions`), {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ text: questionText })
@@ -55,7 +60,7 @@ export const addQuestionToEvent = async (eventId: string, questionText: string):
 };
 
 export const getActiveQuestionForEvent = async (eventId: string): Promise<Question | null> => {
-  const res = await fetch(`/api/events/${eventId}/questions/active`);
+  const res = await fetch(api(`/api/events/${eventId}/questions/active`));
   if (res.status === 404) return null;
   if (!res.ok) throw new Error('Failed to fetch active question');
   const q = await res.json();
@@ -63,7 +68,7 @@ export const getActiveQuestionForEvent = async (eventId: string): Promise<Questi
 };
 
 export const activateQuestion = async (eventId: string, questionId: string): Promise<Question | null> => {
-  const res = await fetch(`/api/events/${eventId}/questions/${questionId}/activate`, {
+  const res = await fetch(api(`/api/events/${eventId}/questions/${questionId}/activate`), {
     method: 'POST'
   });
   if (res.status === 404) return null;
@@ -73,7 +78,7 @@ export const activateQuestion = async (eventId: string, questionId: string): Pro
 };
 
 export const clearResponsesForQuestion = async (eventId: string, questionId: string): Promise<Question | null> => {
-  const res = await fetch(`/api/events/${eventId}/questions/${questionId}/responses/clear`, {
+  const res = await fetch(api(`/api/events/${eventId}/questions/${questionId}/responses/clear`), {
     method: 'POST'
   });
   if (res.status === 404) return null;
@@ -83,7 +88,7 @@ export const clearResponsesForQuestion = async (eventId: string, questionId: str
 };
 
 export const submitResponse = async (eventId: string, questionId: string, responseText: string, isFromAdmin = false, participantId?: string): Promise<Response | null> => {
-  const res = await fetch(`/api/events/${eventId}/questions/${questionId}/responses`, {
+  const res = await fetch(api(`/api/events/${eventId}/questions/${questionId}/responses`), {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ text: responseText, isFromAdmin, participantId })
@@ -95,7 +100,7 @@ export const submitResponse = async (eventId: string, questionId: string, respon
 };
 
 export const getAllResponsesForEvent = async (eventId: string): Promise<Response[]> => {
-  const res = await fetch(`/api/events/${eventId}/responses`);
+  const res = await fetch(api(`/api/events/${eventId}/responses`));
   if (res.status === 404) return [];
   if (!res.ok) throw new Error('Failed to fetch responses');
   const arr = await res.json();
@@ -103,7 +108,7 @@ export const getAllResponsesForEvent = async (eventId: string): Promise<Response
 };
 
 export const moderateResponse = async (eventId: string, responseId: string, shouldHide: boolean): Promise<boolean> => {
-  const res = await fetch(`/api/events/${eventId}/responses/${responseId}/moderate`, {
+  const res = await fetch(api(`/api/events/${eventId}/responses/${responseId}/moderate`), {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ shouldHide })
@@ -114,7 +119,7 @@ export const moderateResponse = async (eventId: string, responseId: string, shou
 };
 
 export const verifyAdmin = async (eventId: string, adminKey: string, adminPin?: string): Promise<boolean> => {
-  const res = await fetch(`/api/events/${eventId}/admin/verify`, {
+  const res = await fetch(api(`/api/events/${eventId}/admin/verify`), {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ adminKey, adminPin })
